@@ -1,6 +1,7 @@
 <template>
   <el-config-provider>
-    <div class="app-shell">
+    <RouterView v-if="isBlankLayout" />
+    <div v-else class="app-shell">
       <AppHeader :cart-count="cartCount" />
       <main class="app-main">
         <RouterView />
@@ -14,9 +15,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+
+const route = useRoute()
+const isBlankLayout = computed(() => {
+  const layout = route.meta?.layout
+  return layout === 'admin' || layout === 'blank'
+})
 
 const cartCount = ref(0)
 const icp = ''
