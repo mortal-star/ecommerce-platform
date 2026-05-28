@@ -197,7 +197,7 @@ const router = createRouter({
   }
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const token = getToken()
   const isAdminRoute = to.path.startsWith('/admin') && to.name !== 'AdminLogin'
 
@@ -212,6 +212,9 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAdmin && token) {
     const userStore = useUserStore()
+    if (!userStore.isAdmin) {
+      await userStore.ensureProfile()
+    }
     if (!userStore.isAdmin) {
       ElMessage.warning('该页面仅管理员可访问')
       next({ name: 'AdminLogin', query: { redirect: to.fullPath } })
