@@ -24,5 +24,6 @@ public interface OrderService extends IService<Order> {
     void shipOrder(Long adminId, Long orderId, ShipOrderDTO request);
     void processRefund(Long adminId, Long orderId, RefundProcessDTO request);
     PageVO<Order> listAdminOrders(OrderQueryDTO query);
+    void adminCancelOrder(Long orderId);
     List<OrderExportVO> exportOrders(Integer status);
 }
