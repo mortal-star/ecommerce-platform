@@ -39,6 +39,44 @@ const routes = [
     meta: { title: '我的订单', requiresAuth: true }
   },
   {
+    path: '/user',
+    component: () => import('@/views/user/UserLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      { path: '', redirect: '/user/profile' },
+      {
+        path: 'profile',
+        name: 'UserProfile',
+        component: () => import('@/views/user/ProfileView.vue'),
+        meta: { title: '个人中心', requiresAuth: true }
+      },
+      {
+        path: 'favorites',
+        name: 'UserFavorites',
+        component: () => import('@/views/user/FavoritesView.vue'),
+        meta: { title: '我的收藏', requiresAuth: true }
+      },
+      {
+        path: 'addresses',
+        name: 'UserAddresses',
+        component: () => import('@/views/user/AddressesView.vue'),
+        meta: { title: '收货地址', requiresAuth: true }
+      },
+      {
+        path: 'account',
+        name: 'UserAccount',
+        component: () => import('@/views/user/AccountView.vue'),
+        meta: { title: '账号设置', requiresAuth: true }
+      },
+      {
+        path: 'password',
+        name: 'UserPassword',
+        component: () => import('@/views/user/PasswordView.vue'),
+        meta: { title: '修改密码', requiresAuth: true }
+      }
+    ]
+  },
+  {
     path: '/admin',
     name: 'AdminDashboard',
     component: () => import('@/views/admin/DashboardView.vue'),
