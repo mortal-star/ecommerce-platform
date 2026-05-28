@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ecommerce.dto.ProductReviewDTO;
+import com.example.ecommerce.dto.ReviewQueryDTO;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.ProductReview;
 import com.example.ecommerce.mapper.ProductReviewMapper;
@@ -49,6 +50,26 @@ public class ProductReviewServiceImpl extends ServiceImpl<ProductReviewMapper, P
                 .eq(ProductReview::getStatus, 1)
                 .eq(ProductReview::getDeleted, 0)
                 .orderByDesc(ProductReview::getCreateTime));
+        return new PageVO<>(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize(), page.getPages());
+    }
+
+    @Override
+    public PageVO<ProductReview> listAdminReviews(ReviewQueryDTO query) {
+        Long current = query.getPageNum() == null || query.getPageNum() < 1 ? 1L : query.getPageNum();
+        Long size = query.getPageSize() == null || query.getPageSize() < 1 ? 10L : Math.min(query.getPageSize(), 100L);
+        LambdaQueryWrapper<ProductReview> wrapper = new LambdaQueryWrapper<ProductReview>()
+                .eq(ProductReview::getDeleted, 0)
+                .orderByDesc(ProductReview::getCreateTime);
+        if (query.getProductId() != null) {
+            wrapper.eq(ProductReview::getProductId, query.getProductId());
+        }
+        if (query.getRating() != null) {
+            wrapper.eq(ProductReview::getRating, query.getRating());
+        }
+        if (query.getKeyword() != null && !query.getKeyword().trim().isEmpty()) {
+            wrapper.like(ProductReview::getContent, query.getKeyword().trim());
+        }
+        Page<ProductReview> page = page(new Page<>(current, size), wrapper);
         return new PageVO<>(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize(), page.getPages());
     }
 

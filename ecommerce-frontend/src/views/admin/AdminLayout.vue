@@ -147,7 +147,8 @@ const menuItems = [
     icon: Goods,
     children: [
       { path: '/admin/products', title: '商品列表', icon: Goods },
-      { path: '/admin/categories', title: '分类管理', icon: Document }
+      { path: '/admin/categories', title: '分类管理', icon: Document },
+      { path: '/admin/reviews', title: '商品评价', icon: Document }
     ]
   },
   { path: '/admin/orders', title: '订单管理', icon: ShoppingCart },

@@ -204,11 +204,36 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public PageVO<Order> listAdminOrders(OrderQueryDTO query) {
-        Page<Order> page = page(new Page<>(safePageNum(query), safePageSize(query)), new LambdaQueryWrapper<Order>()
+        LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<Order>()
                 .eq(query.getStatus() != null, Order::getOrderStatus, query.getStatus())
                 .eq(Order::getDeleted, 0)
-                .orderByDesc(Order::getCreateTime));
+                .orderByDesc(Order::getCreateTime);
+        String orderNo = query.getOrderNo();
+        if (orderNo != null && !orderNo.trim().isEmpty()) {
+            wrapper.like(Order::getOrderNo, orderNo.trim());
+        }
+        String userKeyword = query.getUserKeyword();
+        if (userKeyword != null && !userKeyword.trim().isEmpty()) {
+            String kw = userKeyword.trim();
+            wrapper.and(w -> w.like(Order::getReceiverName, kw).or().like(Order::getReceiverPhone, kw));
+        }
+        Page<Order> page = page(new Page<>(safePageNum(query), safePageSize(query)), wrapper);
         return new PageVO<>(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize(), page.getPages());
+    }
+
+    @Override
+    public void adminCancelOrder(Long orderId) {
+        Order order = getValidOrder(orderId);
+        Integer st = order.getOrderStatus();
+        if (OrderStatus.COMPLETED.getCode().equals(st)
+                || OrderStatus.CANCELED.getCode().equals(st)
+                || OrderStatus.CLOSED.getCode().equals(st)
+                || OrderStatus.REFUNDED.getCode().equals(st)) {
+            throw new IllegalArgumentException("当前订单状态不允许取消");
+        }
+        order.setOrderStatus(OrderStatus.CANCELED.getCode());
+        order.setCloseTime(LocalDateTime.now());
+        updateById(order);
     }
 
     @Override
