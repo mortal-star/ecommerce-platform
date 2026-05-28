@@ -1,6 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.common.Result;
+import com.example.ecommerce.dto.ChangePasswordDTO;
 import com.example.ecommerce.dto.UpdateProfileRequest;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.security.SecurityUserDetails;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +38,12 @@ public class UserController {
         User user = userService.updateProfile(principal.getUserId(), request);
         user.setPassword(null);
         return Result.success("个人信息修改成功", user);
+    }
+
+    @PatchMapping("/password")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public Result<Void> changePassword(@AuthenticationPrincipal SecurityUserDetails principal, @Valid @RequestBody ChangePasswordDTO request) {
+        userService.changePassword(principal.getUserId(), request);
+        return Result.success("密码修改成功", null);
     }
 }
