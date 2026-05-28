@@ -37,7 +37,7 @@
         />
       </el-form-item>
       <el-form-item label="头像">
-        <ImageUpload v-model="avatarList" :limit="1" />
+        <ImageUpload v-model="avatarUrl" :limit="1" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
@@ -56,7 +56,7 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 const formRef = ref(null)
 const saving = ref(false)
-const avatarList = ref([])
+const avatarUrl = ref('')
 
 const form = ref({
   username: '',
@@ -73,9 +73,9 @@ const rules = {
   phone: [{ pattern: /^1\d{10}$/, message: '手机号格式不正确', trigger: 'blur' }]
 }
 
-watch(avatarList, val => {
-  form.value.avatar = val[0]?.url || ''
-}, { deep: true })
+watch(avatarUrl, val => {
+  form.value.avatar = val || ''
+})
 
 async function loadProfile() {
   try {
@@ -90,9 +90,7 @@ async function loadProfile() {
         birthday: data.birthday || '',
         avatar: data.avatar || ''
       }
-      if (data.avatar) {
-        avatarList.value = [{ url: data.avatar }]
-      }
+      avatarUrl.value = data.avatar || ''
     }
   } catch (e) {}
 }
