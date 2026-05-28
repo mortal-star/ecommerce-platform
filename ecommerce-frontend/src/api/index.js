@@ -1,25 +1,12 @@
-import request from '@/utils/request'
-
-export function getBanners(params) {
-  return request({
-    url: '/banners',
-    method: 'get',
-    params
-  })
-}
-
-export function getProducts(params) {
-  return request({
-    url: '/products',
-    method: 'get',
-    params
-  })
-}
-
-export function login(data) {
-  return request({
-    url: '/auth/login',
-    method: 'post',
-    data
-  })
-}
+export * from './auth'
+export * from './banner'
+export * from './category'
+export * from './product'
+export * from './cart'
+export * from './favorite'
+export * from './review'
+export * from './order'
+export * from './address'
+export * from './user'
+export * from './notice'
+export * from './feedback'

@@ -21,6 +21,12 @@ const routes = [
     meta: { title: '商品列表', public: true }
   },
   {
+    path: '/products/:id',
+    name: 'ProductDetail',
+    component: () => import('@/views/ProductDetailView.vue'),
+    meta: { title: '商品详情', public: true }
+  },
+  {
     path: '/cart',
     name: 'Cart',
     component: () => import('@/views/CartView.vue'),
