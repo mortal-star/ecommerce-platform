@@ -134,37 +134,43 @@ const routes = [
       {
         path: 'products',
         name: 'AdminProducts',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/ProductManageView.vue'),
         meta: { title: '商品列表', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'categories',
         name: 'AdminCategories',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/CategoryManageView.vue'),
         meta: { title: '分类管理', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'reviews',
+        name: 'AdminReviews',
+        component: () => import('@/views/admin/ReviewManageView.vue'),
+        meta: { title: '评价管理', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'orders',
         name: 'AdminOrders',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/OrderManageView.vue'),
         meta: { title: '订单管理', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'banners',
         name: 'AdminBanners',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/BannerManageView.vue'),
         meta: { title: '轮播图', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'notices',
         name: 'AdminNotices',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/NoticeManageView.vue'),
         meta: { title: '系统公告', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'feedback',
         name: 'AdminFeedback',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/FeedbackManageView.vue'),
         meta: { title: '用户反馈', requiresAuth: true, requiresAdmin: true }
       },
       {
@@ -176,7 +182,7 @@ const routes = [
       {
         path: 'profile',
         name: 'AdminProfile',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/AdminProfileView.vue'),
         meta: { title: '个人信息', requiresAuth: true, requiresAdmin: true }
       }
     ]

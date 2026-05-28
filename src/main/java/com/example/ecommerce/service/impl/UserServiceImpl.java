@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.LoginResponse;
 import com.example.ecommerce.dto.RegisterRequest;
+import com.example.ecommerce.dto.ChangePasswordDTO;
 import com.example.ecommerce.dto.ResetPasswordRequest;
 import com.example.ecommerce.dto.UpdateProfileRequest;
 import com.example.ecommerce.entity.User;
@@ -116,6 +117,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setGender(request.getGender());
         updateById(user);
         return user;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void changePassword(Long userId, ChangePasswordDTO request) {
+        User user = getById(userId);
+        if (user == null || !Integer.valueOf(0).equals(user.getDeleted())) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BadCredentialsException("原密码错误");
+        }
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("新密码不能与原密码相同");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        updateById(user);
     }
 
     @Override
