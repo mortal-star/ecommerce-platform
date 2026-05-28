@@ -128,7 +128,7 @@ const routes = [
       {
         path: 'users',
         name: 'AdminUsers',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/UserListView.vue'),
         meta: { title: '用户管理', requiresAuth: true, requiresAdmin: true }
       },
       {
