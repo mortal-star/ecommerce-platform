@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getToken } from '@/utils/auth'
+import { useUserStore } from '@/stores'
+import { ElMessage } from 'element-plus'
 
 const routes = [
   {
@@ -107,10 +109,77 @@ const routes = [
     ]
   },
   {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/AdminLoginView.vue'),
+    meta: { title: '管理员登录', layout: 'blank', public: true }
+  },
+  {
     path: '/admin',
-    name: 'AdminDashboard',
-    component: () => import('@/views/admin/DashboardView.vue'),
-    meta: { title: '管理后台', requiresAuth: true, requiresAdmin: true }
+    component: () => import('@/views/admin/AdminLayout.vue'),
+    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true },
+    children: [
+      {
+        path: '',
+        name: 'AdminDashboard',
+        component: () => import('@/views/admin/DashboardView.vue'),
+        meta: { title: '数据看板', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'users',
+        name: 'AdminUsers',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '用户管理', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'products',
+        name: 'AdminProducts',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '商品列表', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'categories',
+        name: 'AdminCategories',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '分类管理', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'orders',
+        name: 'AdminOrders',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '订单管理', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'banners',
+        name: 'AdminBanners',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '轮播图', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'notices',
+        name: 'AdminNotices',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '系统公告', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'feedback',
+        name: 'AdminFeedback',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '用户反馈', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'settings',
+        name: 'AdminSettings',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '系统设置', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'profile',
+        name: 'AdminProfile',
+        component: () => import('@/views/admin/PlaceholderView.vue'),
+        meta: { title: '个人信息', requiresAuth: true, requiresAdmin: true }
+      }
+    ]
   }
 ]
 
@@ -124,11 +193,28 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = getToken()
+  const isAdminRoute = to.path.startsWith('/admin') && to.name !== 'AdminLogin'
+
   if (to.meta.requiresAuth && !token) {
-    next({ name: 'Login', query: { redirect: to.fullPath } })
+    if (isAdminRoute) {
+      next({ name: 'AdminLogin', query: { redirect: to.fullPath } })
+    } else {
+      next({ name: 'Login', query: { redirect: to.fullPath } })
+    }
     return
   }
-  document.title = to.meta.title ? `${to.meta.title} - 电商平台` : '电商平台'
+
+  if (to.meta.requiresAdmin && token) {
+    const userStore = useUserStore()
+    if (!userStore.isAdmin) {
+      ElMessage.warning('该页面仅管理员可访问')
+      next({ name: 'AdminLogin', query: { redirect: to.fullPath } })
+      return
+    }
+  }
+
+  const suffix = isAdminRoute || to.name === 'AdminLogin' ? '管理后台' : '电商平台'
+  document.title = to.meta.title ? `${to.meta.title} - ${suffix}` : suffix
   next()
 })
 
