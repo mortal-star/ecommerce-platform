@@ -2,6 +2,7 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.common.Result;
 import com.example.ecommerce.dto.ProductReviewDTO;
+import com.example.ecommerce.dto.ReviewQueryDTO;
 import com.example.ecommerce.entity.ProductReview;
 import com.example.ecommerce.security.SecurityUserDetails;
 import com.example.ecommerce.service.ProductReviewService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +35,12 @@ public class ProductReviewController {
                                                        @RequestParam(defaultValue = "1") Long pageNum,
                                                        @RequestParam(defaultValue = "10") Long pageSize) {
         return Result.success(productReviewService.listReviews(productId, pageNum, pageSize));
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<PageVO<ProductReview>> adminList(@ModelAttribute ReviewQueryDTO query) {
+        return Result.success(productReviewService.listAdminReviews(query));
     }
 
     @PostMapping

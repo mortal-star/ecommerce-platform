@@ -103,6 +103,13 @@ public class OrderController {
         return Result.success("退款处理完成", null);
     }
 
+    @PatchMapping("/admin/{orderId}/cancel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<Void> adminCancel(@PathVariable Long orderId) {
+        orderService.adminCancelOrder(orderId);
+        return Result.success("订单取消成功", null);
+    }
+
     @GetMapping("/admin/export")
     @PreAuthorize("hasRole('ADMIN')")
     public Result<List<OrderExportVO>> exportOrders(@RequestParam(required = false) Integer status) {

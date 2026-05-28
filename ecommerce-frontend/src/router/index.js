@@ -134,19 +134,25 @@ const routes = [
       {
         path: 'products',
         name: 'AdminProducts',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/ProductManageView.vue'),
         meta: { title: '商品列表', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'categories',
         name: 'AdminCategories',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/CategoryManageView.vue'),
         meta: { title: '分类管理', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'reviews',
+        name: 'AdminReviews',
+        component: () => import('@/views/admin/ReviewManageView.vue'),
+        meta: { title: '评价管理', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'orders',
         name: 'AdminOrders',
-        component: () => import('@/views/admin/PlaceholderView.vue'),
+        component: () => import('@/views/admin/OrderManageView.vue'),
         meta: { title: '订单管理', requiresAuth: true, requiresAdmin: true }
       },
       {
